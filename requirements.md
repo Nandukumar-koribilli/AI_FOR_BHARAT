@@ -5,6 +5,18 @@
 
 ---
 
+## 🚀 Getting Started
+
+**Clone the repository first:**
+```bash
+git clone https://github.com/Nandukumar-koribilli/AI_FOR_BHARAT.git
+cd AI_FOR_BHARAT
+```
+
+**GitHub Repository:** https://github.com/Nandukumar-koribilli/AI_FOR_BHARAT
+
+---
+
 ## 1. Project Overview
 
 ### 1.1 Problem Statement
