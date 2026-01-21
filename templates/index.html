@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnAI - AI Learning & Developer Productivity Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #475569;
+            --success: #22c55e;
+            --error: #ef4444;
+            --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo i {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.75rem;
+        }
+
+        .badge {
+            background: var(--gradient);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Main Layout */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar h3 {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-item:hover {
+            background: var(--bg-input);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Content Area */
+        .content {
+            min-height: 600px;
+        }
+
+        .feature-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feature-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-header {
+            margin-bottom: 2rem;
+        }
+
+        .panel-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .panel-header h1 i {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .panel-header p {
+            color: var(--text-secondary);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .card:hover {
+            border-color: var(--primary);
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+            resize: vertical;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        textarea:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        textarea {
+            min-height: 200px;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--bg-input);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        /* Options Grid */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-card {
+            background: var(--bg-input);
+            border: 2px solid transparent;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .option-card:hover {
+            border-color: var(--primary);
+        }
+
+        .option-card.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .option-card i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .option-card h4 {
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .option-card p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Result Area */
+        .result-area {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            min-height: 200px;
+            display: none;
+        }
+
+        .result-area.visible {
+            display: block;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-content {
+            line-height: 1.8;
+        }
+
+        .result-content h1, .result-content h2, .result-content h3 {
+            color: var(--primary);
+            margin: 1.5rem 0 1rem;
+        }
+
+        .result-content h1:first-child, .result-content h2:first-child {
+            margin-top: 0;
+        }
+
+        .result-content code {
+            background: var(--bg-input);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+        }
+
+        .result-content pre {
+            background: var(--bg-dark);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .result-content pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .result-content ul, .result-content ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .result-content li {
+            margin: 0.5rem 0;
+        }
+
+        .result-content blockquote {
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: var(--text-secondary);
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--bg-input);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Chat Interface */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: var(--bg-dark);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .message.assistant .message-avatar {
+            background: var(--gradient);
+        }
+
+        .message.user .message-avatar {
+            background: var(--secondary);
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 1rem;
+            border-radius: 1rem;
+        }
+
+        .message.assistant .message-content {
+            background: var(--bg-card);
+            border-bottom-left-radius: 0.25rem;
+        }
+
+        .message.user .message-content {
+            background: var(--primary);
+            border-bottom-right-radius: 0.25rem;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+        }
+
+        /* Hero Section for Home */
+        .hero {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+            border-radius: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            font-size: 1.125rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .feature-card i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .sidebar h3 {
+                width: 100%;
+            }
+
+            .nav-item {
+                margin-bottom: 0;
+            }
+        }
+
+        /* Copy Button */
+        .copy-btn {
+            background: var(--bg-input);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            color: var(--text-primary);
+            background: var(--border);
+        }
+
+        .copy-btn.copied {
+            color: var(--success);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <span>LearnAI</span>
+            </div>
+            <span class="badge">AI for Bharat 2026</span>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <aside class="sidebar">
+            <h3>Features</h3>
+            <div class="nav-item active" data-panel="home">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </div>
+            <div class="nav-item" data-panel="explain">
+                <i class="fas fa-code"></i>
+                <span>Code Explainer</span>
+            </div>
+            <div class="nav-item" data-panel="tutor">
+                <i class="fas fa-graduation-cap"></i>
+                <span>AI Tutor</span>
+            </div>
+            <div class="nav-item" data-panel="debug">
+                <i class="fas fa-bug"></i>
+                <span>Debug Helper</span>
+            </div>
+            <div class="nav-item" data-panel="docs">
+                <i class="fas fa-file-alt"></i>
+                <span>Doc Generator</span>
+            </div>
+            <div class="nav-item" data-panel="summarize">
+                <i class="fas fa-compress-alt"></i>
+                <span>Summarizer</span>
+            </div>
+            <div class="nav-item" data-panel="path">
+                <i class="fas fa-route"></i>
+                <span>Learning Path</span>
+            </div>
+            <div class="nav-item" data-panel="chat">
+                <i class="fas fa-comments"></i>
+                <span>AI Chat</span>
+            </div>
+        </aside>
+
+        <section class="content">
+            <!-- Home Panel -->
+            <div id="panel-home" class="feature-panel active">
+                <div class="hero">
+                    <h1>🚀 Learn Faster. Build Smarter.</h1>
+                    <p>Your AI-powered companion for learning programming, understanding code, and boosting developer productivity.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card" data-goto="explain">
+                        <i class="fas fa-code"></i>
+                        <h3>Code Explainer</h3>
+                        <p>Paste any code and get a detailed, beginner-friendly explanation with step-by-step breakdown.</p>
+                    </div>
+                    <div class="feature-card" data-goto="tutor">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h3>AI Tutor</h3>
+                        <p>Learn any topic with personalized lessons tailored to your level and learning style.</p>
+                    </div>
+                    <div class="feature-card" data-goto="debug">
+                        <i class="fas fa-bug"></i>
+                        <h3>Debug Helper</h3>
+                        <p>Get help fixing errors with clear explanations of what went wrong and how to fix it.</p>
+                    </div>
+                    <div class="feature-card" data-goto="docs">
+                        <i class="fas fa-file-alt"></i>
+                        <h3>Doc Generator</h3>
+                        <p>Automatically generate professional documentation for your code.</p>
+                    </div>
+                    <div class="feature-card" data-goto="summarize">
+                        <i class="fas fa-compress-alt"></i>
+                        <h3>Summarizer</h3>
+                        <p>Condense long articles, documentation, or text into digestible summaries.</p>
+                    </div>
+                    <div class="feature-card" data-goto="path">
+                        <i class="fas fa-route"></i>
+                        <h3>Learning Path</h3>
+                        <p>Get a personalized roadmap to learn any technology or skill efficiently.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Explainer Panel -->
+            <div id="panel-explain" class="feature-panel">
+                <div class="panel-header">
+                    <h1><i class="fas fa-code"></i> Code Explainer</h1>
+                    <p>Paste any code and get a detailed, beginner-friendly explanation</p>
+                </div>
+                <div class="card">
+                    <div class="form-group">
+                        <label>Your Code</label>
+                        <textarea id="explain-code" placeholder="Paste your code here..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Programming Language</label>
+                        <select id="explain-language">
+                            <option value="auto">Auto-detect</option>
+                            <option value="python">Python</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="java">Java</option>
+                            <option value="c++">C++</option>
+                            <option value="c#">C#</option>
+                            <option value="go">Go</option>
+                            <option value="rust">Rust</option>
+                            <option value="sql">SQL</option>
+                            <option value="html/css">HTML/CSS</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="explainCode()">
+                        <i class="fas fa-magic"></i> Explain This Code
+                    </button>
+                </div>
+                <div id="explain-result" class="result-area">
+                    <div class="result-header">
+                        <span><i class="fas fa-lightbulb"></i> Explanation</span>
+                        <button class="copy-btn" onclick="copyResult('explain-result-content')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <div id="explain-result-content" class="result-content"></div>
+                </div>
+            </div>
+
+            <!-- AI Tutor Panel -->
+            <div id="panel-tutor" class="feature-panel">
+                <div class="panel-header">
+                    <h1><i class="fas fa-graduation-cap"></i> AI Tutor</h1>
+                    <p>Learn any topic with personalized lessons</p>
+                </div>
+                <div class="card">
+                    <div class="form-group">
+                        <label>What do you want to learn?</label>
+                        <input type="text" id="tutor-topic" placeholder="e.g., Python decorators, React hooks, SQL joins...">
+                    </div>
+                    <div class="form-group">
+                        <label>Your Level</label>
+                        <div class="options-grid">
+                            <div class="option-card selected" data-value="beginner" data-group="level">
+                                <i class="fas fa-seedling"></i>
+                                <h4>Beginner</h4>
+                                <p>New to this topic</p>
+                            </div>
+                            <div class="option-card" data-value="intermediate" data-group="level">
+                                <i class="fas fa-tree"></i>
+                                <h4>Intermediate</h4>
+                                <p>Know the basics</p>
+                            </div>
+                            <div class="option-card" data-value="advanced" data-group="level">
+                                <i class="fas fa-mountain"></i>
+                                <h4>Advanced</h4>
+                                <p>Want deeper understanding</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Learning Style</label>
+                        <div class="options-grid">
+                            <div class="option-card selected" data-value="visual" data-group="style">
+                                <i class="fas fa-eye"></i>
+                                <h4>Visual</h4>
+                                <p>Diagrams & examples</p>
+                            </div>
+                            <div class="option-card" data-value="practical" data-group="style">
+                                <i class="fas fa-hammer"></i>
+                                <h4>Practical</h4>
+                                <p>Hands-on coding</p>
+                            </div>
+                            <div class="option-card" data-value="theoretical" data-group="style">
+                                <i class="fas fa-book"></i>
+                                <h4>Theoretical</h4>
+                                <p>Deep concepts</p>
+                            </div>
+                            <div class="option-card" data-value="storytelling" data-group="style">
+                                <i class="fas fa-book-reader"></i>
+                                <h4>Storytelling</h4>
+                                <p>Real-world stories</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="startTutor()">
+                        <i class="fas fa-play"></i> Start Learning
+                    </button>
+                </div>
+                <div id="tutor-result" class="result-area">
+                    <div class="result-header">
+                        <span><i class="fas fa-chalkboard-teacher"></i> Your Lesson</span>
+                        <button class="copy-btn" onclick="copyResult('tutor-result-content')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <div id="tutor-result-content" class="result-content"></div>
+                </div>
+            </div>
+
+            <!-- Debug Helper Panel -->
+            <div id="panel-debug" class="feature-panel">
+                <div class="panel-header">
+                    <h1><i class="fas fa-bug"></i> Debug Helper</h1>
+                    <p>Get help fixing errors with detailed explanations</p>
+                </div>
+                <div class="card">
+                    <div class="form-group">
+                        <label>Your Code (with the bug)</label>
+                        <textarea id="debug-code" placeholder="Paste your buggy code here..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Error Message or Problem Description</label>
+                        <textarea id="debug-error" style="min-height: 100px;" placeholder="Paste the error message or describe what's going wrong..."></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="debugCode()">
+                        <i class="fas fa-wrench"></i> Help Me Fix This
+                    </button>
+                </div>
+                <div id="debug-result" class="result-area">
+                    <div class="result-header">
+                        <span><i class="fas fa-check-circle"></i> Solution</span>
+                        <button class="copy-btn" onclick="copyResult('debug-result-content')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <div id="debug-result-content" class="result-content"></div>
+                </div>
+            </div>
+
+            <!-- Doc Generator Panel -->
+            <div id="panel-docs" class="feature-panel">
+                <div class="panel-header">
+                    <h1><i class="fas fa-file-alt"></i> Documentation Generator</h1>
+                    <p>Generate professional documentation for your code</p>
+                </div>
+                <div class="card">
+                    <div class="form-group">
+                        <label>Your Code</label>
+                        <textarea id="docs-code" placeholder="Paste your code to document..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Documentation Style</label>
+                        <select id="docs-style">
+                            <option value="comprehensive">Comprehensive (Full docs)</option>
+                            <option value="concise">Concise (Quick reference)</option>
+                            <option value="api">API Style (For libraries)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="generateDocs()">
+                        <i class="fas fa-file-export"></i> Generate Documentation
+                    </button>
+                </div>
+                <div id="docs-result" class="result-area">
+                    <div class="result-header">
+                        <span><i class="fas fa-file-code"></i> Generated Documentation</span>
+                        <button class="copy-btn" onclick="copyResult('docs-result-content')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <div id="docs-result-content" class="result-content"></div>
+                </div>
+            </div>
+
+            <!-- Summarizer Panel -->
+            <div id="panel-summarize" class="feature-panel">
+                <div class="panel-header">
+                    <h1><i class="fas fa-compress-alt"></i> Content Summarizer</h1>
+                    <p>Condense long content into digestible summaries</p>
+                </div>
+                <div class="card">
+                    <div class="form-group">
+                        <label>Content to Summarize</label>
+                        <textarea id="summarize-content" placeholder="Paste the article, documentation, or text you want to summarize..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Summary Style</label>
+                        <div class="options-grid">
+                            <div class="option-card selected" data-value="concise" data-group="summary">
+                                <i class="fas fa-compress"></i>
+                                <h4>Concise</h4>
+                                <p>Brief key points</p>
+                            </div>
+                            <div class="option-card" data-value="detailed" data-group="summary">
+                                <i class="fas fa-expand"></i>
+                                <h4>Detailed</h4>
+                                <p>Thorough summary</p>
+                            </div>
+                            <div class="option-card" data-value="eli5" data-group="summary">
+                                <i class="fas fa-child"></i>
+                                <h4>ELI5</h4>
+                                <p>Super simple</p>
+                            </div>
+                            <div class="option-card" data-value="actionable" data-group="summary">
+                                <i class="fas fa-tasks"></i>
+                                <h4>Actionable</h4>
+                                <p>Action items</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="summarizeContent()">
+                        <i class="fas fa-magic"></i> Summarize
+                    </button>
+                </div>
+                <div id="summarize-result" class="result-area">
+                    <div class="result-header">
+                        <span><i class="fas fa-align-left"></i> Summary</span>
+                        <button class="copy-btn" onclick="copyResult('summarize-result-content')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <div id="summarize-result-content" class="result-content"></div>
+                </div>
+            </div>
+
+            <!-- Learning Path Panel -->
+            <div id="panel-path" class="feature-panel">
+                <div class="panel-header">
+                    <h1><i class="fas fa-route"></i> Learning Path Generator</h1>
+                    <p>Get a personalized roadmap to master any skill</p>
+                </div>
+                <div class="card">
+                    <div class="form-group">
+                        <label>What do you want to learn/achieve?</label>
+                        <input type="text" id="path-goal" placeholder="e.g., Become a full-stack developer, Learn machine learning, Master React...">
+                    </div>
+                    <div class="form-group">
+                        <label>Current Level</label>
+                        <select id="path-level">
+                            <option value="complete beginner">Complete Beginner (No experience)</option>
+                            <option value="beginner">Beginner (Some basics)</option>
+                            <option value="intermediate">Intermediate (Comfortable with fundamentals)</option>
+                            <option value="advanced">Advanced (Want to specialize)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Time Available</label>
+                        <select id="path-time">
+                            <option value="1 week">1 Week (Intensive)</option>
+                            <option value="2 weeks">2 Weeks</option>
+                            <option value="1 month" selected>1 Month</option>
+                            <option value="3 months">3 Months</option>
+                            <option value="6 months">6 Months</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="generatePath()">
+                        <i class="fas fa-map"></i> Generate Learning Path
+                    </button>
+                </div>
+                <div id="path-result" class="result-area">
+                    <div class="result-header">
+                        <span><i class="fas fa-road"></i> Your Learning Path</span>
+                        <button class="copy-btn" onclick="copyResult('path-result-content')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <div id="path-result-content" class="result-content"></div>
+                </div>
+            </div>
+
+            <!-- Chat Panel -->
+            <div id="panel-chat" class="feature-panel">
+                <div class="panel-header">
+                    <h1><i class="fas fa-comments"></i> AI Learning Assistant</h1>
+                    <p>Chat with AI for help with coding, learning, and productivity</p>
+                </div>
+                <div class="card">
+                    <div class="chat-container">
+                        <div id="chat-messages" class="chat-messages">
+                            <div class="message assistant">
+                                <div class="message-avatar">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="message-content">
+                                    👋 Hi! I'm your AI learning assistant. Ask me anything about programming, technology, or learning. I'm here to help you learn faster and code better!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="chat-input" placeholder="Ask me anything..." onkeypress="if(event.key === 'Enter') sendChat()">
+                            <button class="btn btn-primary" onclick="sendChat()">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                            <button class="btn btn-secondary" onclick="clearChat()">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const panel = item.dataset.panel;
+                switchPanel(panel);
+            });
+        });
+
+        document.querySelectorAll('.feature-card[data-goto]').forEach(card => {
+            card.addEventListener('click', () => {
+                const panel = card.dataset.goto;
+                switchPanel(panel);
+            });
+        });
+
+        function switchPanel(panel) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.querySelectorAll('.feature-panel').forEach(p => p.classList.remove('active'));
+            
+            document.querySelector(`.nav-item[data-panel="${panel}"]`).classList.add('active');
+            document.getElementById(`panel-${panel}`).classList.add('active');
+        }
+
+        // Option Cards Selection
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const group = card.dataset.group;
+                document.querySelectorAll(`.option-card[data-group="${group}"]`).forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+            });
+        });
+
+        // Helper function to show loading
+        function showLoading(resultId) {
+            const resultArea = document.getElementById(resultId);
+            resultArea.classList.add('visible');
+            resultArea.querySelector('.result-content').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <span>AI is thinking...</span>
+                </div>
+            `;
+        }
+
+        // Helper function to show result
+        function showResult(resultId, content) {
+            const resultArea = document.getElementById(resultId);
+            resultArea.classList.add('visible');
+            resultArea.querySelector('.result-content').innerHTML = marked.parse(content);
+        }
+
+        // Helper function to show error
+        function showError(resultId, error) {
+            const resultArea = document.getElementById(resultId);
+            resultArea.classList.add('visible');
+            resultArea.querySelector('.result-content').innerHTML = `
+                <div style="color: var(--error); padding: 1rem;">
+                    <i class="fas fa-exclamation-circle"></i> ${error}
+                </div>
+            `;
+        }
+
+        // API Functions
+        async function explainCode() {
+            const code = document.getElementById('explain-code').value;
+            const language = document.getElementById('explain-language').value;
+            
+            if (!code.trim()) {
+                alert('Please enter some code to explain');
+                return;
+            }
+
+            showLoading('explain-result');
+
+            try {
+                const response = await fetch('/api/explain-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code, language })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('explain-result', data.explanation);
+                } else {
+                    showError('explain-result', data.error);
+                }
+            } catch (error) {
+                showError('explain-result', 'Failed to connect to server. Please try again.');
+            }
+        }
+
+        async function startTutor() {
+            const topic = document.getElementById('tutor-topic').value;
+            const level = document.querySelector('.option-card[data-group="level"].selected').dataset.value;
+            const style = document.querySelector('.option-card[data-group="style"].selected').dataset.value;
+            
+            if (!topic.trim()) {
+                alert('Please enter a topic to learn');
+                return;
+            }
+
+            showLoading('tutor-result');
+
+            try {
+                const response = await fetch('/api/tutor', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ topic, level, learning_style: style })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('tutor-result', data.lesson);
+                } else {
+                    showError('tutor-result', data.error);
+                }
+            } catch (error) {
+                showError('tutor-result', 'Failed to connect to server. Please try again.');
+            }
+        }
+
+        async function debugCode() {
+            const code = document.getElementById('debug-code').value;
+            const errorMessage = document.getElementById('debug-error').value;
+            
+            if (!code.trim() || !errorMessage.trim()) {
+                alert('Please provide both code and error message');
+                return;
+            }
+
+            showLoading('debug-result');
+
+            try {
+                const response = await fetch('/api/debug', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code, error_message: errorMessage })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('debug-result', data.solution);
+                } else {
+                    showError('debug-result', data.error);
+                }
+            } catch (error) {
+                showError('debug-result', 'Failed to connect to server. Please try again.');
+            }
+        }
+
+        async function generateDocs() {
+            const code = document.getElementById('docs-code').value;
+            const docStyle = document.getElementById('docs-style').value;
+            
+            if (!code.trim()) {
+                alert('Please enter code to document');
+                return;
+            }
+
+            showLoading('docs-result');
+
+            try {
+                const response = await fetch('/api/document', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code, doc_style: docStyle })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('docs-result', data.documentation);
+                } else {
+                    showError('docs-result', data.error);
+                }
+            } catch (error) {
+                showError('docs-result', 'Failed to connect to server. Please try again.');
+            }
+        }
+
+        async function summarizeContent() {
+            const content = document.getElementById('summarize-content').value;
+            const summaryType = document.querySelector('.option-card[data-group="summary"].selected').dataset.value;
+            
+            if (!content.trim()) {
+                alert('Please enter content to summarize');
+                return;
+            }
+
+            showLoading('summarize-result');
+
+            try {
+                const response = await fetch('/api/summarize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content, summary_type: summaryType })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('summarize-result', data.summary);
+                } else {
+                    showError('summarize-result', data.error);
+                }
+            } catch (error) {
+                showError('summarize-result', 'Failed to connect to server. Please try again.');
+            }
+        }
+
+        async function generatePath() {
+            const goal = document.getElementById('path-goal').value;
+            const level = document.getElementById('path-level').value;
+            const time = document.getElementById('path-time').value;
+            
+            if (!goal.trim()) {
+                alert('Please enter a learning goal');
+                return;
+            }
+
+            showLoading('path-result');
+
+            try {
+                const response = await fetch('/api/learning-path', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ goal, current_level: level, time_available: time })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('path-result', data.learning_path);
+                } else {
+                    showError('path-result', data.error);
+                }
+            } catch (error) {
+                showError('path-result', 'Failed to connect to server. Please try again.');
+            }
+        }
+
+        async function sendChat() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+            
+            // Add user message
+            chatMessages.innerHTML += `
+                <div class="message user">
+                    <div class="message-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="message-content">${escapeHtml(message)}</div>
+                </div>
+            `;
+            
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Add loading message
+            const loadingId = 'loading-' + Date.now();
+            chatMessages.innerHTML += `
+                <div class="message assistant" id="${loadingId}">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="loading" style="padding: 0;">
+                            <div class="spinner"></div>
+                            <span>Thinking...</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+                const data = await response.json();
+                
+                const loadingElement = document.getElementById(loadingId);
+                if (data.success) {
+                    loadingElement.querySelector('.message-content').innerHTML = marked.parse(data.response);
+                } else {
+                    loadingElement.querySelector('.message-content').innerHTML = `<span style="color: var(--error);">${data.error}</span>`;
+                }
+            } catch (error) {
+                const loadingElement = document.getElementById(loadingId);
+                loadingElement.querySelector('.message-content').innerHTML = `<span style="color: var(--error);">Failed to connect to server</span>`;
+            }
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function clearChat() {
+            try {
+                await fetch('/api/clear-chat', { method: 'POST' });
+            } catch (e) {}
+            
+            document.getElementById('chat-messages').innerHTML = `
+                <div class="message assistant">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        👋 Hi! I'm your AI learning assistant. Ask me anything about programming, technology, or learning. I'm here to help you learn faster and code better!
+                    </div>
+                </div>
+            `;
+        }
+
+        function copyResult(elementId) {
+            const content = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(content).then(() => {
+                const btn = event.target.closest('.copy-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Check API status on load
+        fetch('/api/health')
+            .then(r => r.json())
+            .then(data => {
+                if (!data.api_configured) {
+                    console.warn('API key not configured');
+                }
+            })
+            .catch(() => {
+                console.warn('Server not running');
+            });
+    </script>
+</body>
+</html>
